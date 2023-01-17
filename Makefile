@@ -51,7 +51,6 @@ $(BUILD_DIR)/%.o: %.s | $(BUILD_DIR)
 # link obj files into elf executable
 $(BUILD_DIR)/$(EXE).elf: $(OBJECTS) | $(BUILD_DIR)
 	$(LD) $(LDFLAGS) $(OBJECTS) -o $@
-	$(OD) -h $@
 	$(SZ) $@
 
 # create build directory
