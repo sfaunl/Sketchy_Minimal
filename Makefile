@@ -60,3 +60,9 @@ $(BUILD_DIR):
 
 clean:
 	rm -rf $(BUILD_DIR)/*.o $(BUILD_DIR)/*.elf
+
+# Openocd Flags
+OPENOCD_FLAGS = -f interface/stlink.cfg -f target/stm32h7x.cfg
+
+flash: $(BUILD_DIR)/$(EXE).elf
+	openocd $(OPENOCD_FLAGS) -c "program $(BUILD_DIR)/$(EXE).elf reset" -c "shutdown"
