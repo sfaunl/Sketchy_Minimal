@@ -2,7 +2,7 @@
  * @file main.c
  * @author sefa unal
  * @brief 
- * @version 0.1
+ * @version 0.01
  * @date 2023-01-17
  * 
  * @copyright Copyright (c) 2023
