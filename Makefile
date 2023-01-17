@@ -13,12 +13,23 @@ BUILD_DIR = build
 # Compiler Flags
 ASM_SOURCES = startup_stm32h743zitx.s
 C_SOURCES = system_stm32h7xx.c
+C_SOURCES += src/main.c
 C_SOURCES += \
-src/main.c 
+lib/scheduler/scheduler.c \
+lib/scheduler/list/linkedlist.c
+C_SOURCES += \
+lib/shal/common/shal_time.c \
+lib/shal/common/systick/shal_systick.c \
+lib/shal/common/systick/shal_systick_irq.c \
+lib/shal/stm32h7/gpio/shal_stm32h7_gpio.c 
 CINCLUDES = \
 -Ilib/CMSIS/Device/ST/STM32H7xx/Include \
--Ilib/CMSIS/Include
-CDEFS = -DSTM32H743xx
+-Ilib/CMSIS/Include \
+-Ilib/shal/ \
+-Ilib/scheduler/
+CDEFS = \
+-DSTM32H743xx \
+-DSTM32H7
 MCU = -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb
 
 CFLAGS += -O0 -g3

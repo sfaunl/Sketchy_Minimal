@@ -1,3 +1,6 @@
 [submodule "lib/scheduler"]
 	path = lib/scheduler
 	url = https://github.com/sfaunl/Task_Scheduler.git
+[submodule "lib/shal_"]
+	path = lib/shal
+	url = https://github.com/sfaunl/Super_HAL.git

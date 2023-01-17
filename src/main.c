@@ -1,28 +1,53 @@
-#include "stm32h7xx.h"
+#include "shal.h"
+#include "scheduler.h"
 
-#define LD1	(1 << 0)	// Green LED
-#define LD2	(1 << 7)	// Blue LED
-#define LD3	(1 << 14)	// Red LED
+#define LD1	PIN0	// Green LED
+#define LD2	PIN7	// Blue LED
+#define LD3	PIN14	// Red LED
 
-static void delay_ms(unsigned long cycle) {
-	for (unsigned long i=0; i<cycle; i++)
-		for (int j=0; j<11800; j++);
+int TASK_LED1(Scheduler_Task *taskInfo, void *funcArg)
+{
+	(void)taskInfo;
+	(void)funcArg;
+	shal_gpio_toggle(GPIOB, LD1); // Toggle LED
+
+	return 1; // return a non zero value to continue task
+}
+
+int TASK_LED2(Scheduler_Task *taskInfo, void *funcArg)
+{
+	(void)taskInfo;
+	(void)funcArg;
+	shal_gpio_toggle(GPIOB, LD2); // Toggle LED
+
+	return 1; // return a non zero value to continue task
+}
+
+void systick_callback(void *userParam)
+{
+	(void)userParam;
+	shal_gpio_toggle(GPIOB, LD3); // Toggle LED
 }
 
 int main(void) {
-	// activate GPIOB clock
-    RCC->AHB4ENR |= RCC_AHB4ENR_GPIOBEN;
+	// Initialize time library
+	shal_time_init();
+
+	shal_systick_set_callback(SHAL_SYSTICK_CALLBACK_RELOAD, systick_callback, 0);
 
 	// set gpio pins as output
-	GPIOB->MODER = LD1 * LD1 * GPIO_MODER_MODE0_0;
-	GPIOB->MODER |= LD2 * LD2 * GPIO_MODER_MODE0_0;
-	GPIOB->MODER |= LD3 * LD3 * GPIO_MODER_MODE0_0;
+	shal_gpio_set_as_output(GPIOB, LD1, SHAL_GPIO_OTYPE_PUSH_PULL, SHAL_GPIO_OSPEED_LOW, SHAL_GPIO_PULLUPDOWN_NONE);
+	shal_gpio_set_as_output(GPIOB, LD2, SHAL_GPIO_OTYPE_PUSH_PULL, SHAL_GPIO_OSPEED_LOW, SHAL_GPIO_PULLUPDOWN_NONE);
+	shal_gpio_set_as_output(GPIOB, LD3, SHAL_GPIO_OTYPE_PUSH_PULL, SHAL_GPIO_OSPEED_LOW, SHAL_GPIO_PULLUPDOWN_NONE);
 
-	// flash leds
-    while (1) {
-		GPIOB->BSRR = LD1 | LD2 | LD3;	// Set LED
-        delay_ms(1000);
-		GPIOB->BSRR = (LD1 | LD2 | LD3) << 16;	// Reset LED
-        delay_ms(1000);
-    }
+	Scheduler *scheduler = scheduler_open(shal_time_get_ns);
+
+	scheduler_task_new(scheduler, "LED1", SCHEDULER_PERIOD_MS(100), TASK_LED1, 0);
+	scheduler_task_new(scheduler, "LED2", SCHEDULER_PERIOD_MS(1000), TASK_LED2, 0);
+
+	// run tasks
+	scheduler_run(scheduler);
+
+	// we shouldn't get here!
+	while (1);
 }
