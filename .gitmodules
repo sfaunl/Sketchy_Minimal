@@ -1,0 +1,3 @@
+[submodule "lib/scheduler"]
+	path = lib/scheduler
+	url = https://github.com/sfaunl/Task_Scheduler.git
