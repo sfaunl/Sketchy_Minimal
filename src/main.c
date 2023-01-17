@@ -14,7 +14,13 @@
 #define LD1	PIN0	// Green LED
 #define LD2	PIN7	// Blue LED
 #define LD3	PIN14	// Red LED
-
+/**
+ * @brief 
+ * 
+ * @param taskInfo 
+ * @param funcArg 
+ * @return int 
+ */
 int TASK_LED1(Scheduler_Task *taskInfo, void *funcArg)
 {
 	(void)taskInfo;
@@ -23,7 +29,13 @@ int TASK_LED1(Scheduler_Task *taskInfo, void *funcArg)
 
 	return 1; // return a non zero value to continue task
 }
-
+/**
+ * @brief 
+ * 
+ * @param taskInfo 
+ * @param funcArg 
+ * @return int 
+ */
 int TASK_LED2(Scheduler_Task *taskInfo, void *funcArg)
 {
 	(void)taskInfo;
@@ -32,7 +44,11 @@ int TASK_LED2(Scheduler_Task *taskInfo, void *funcArg)
 
 	return 1; // return a non zero value to continue task
 }
-
+/**
+ * @brief 
+ * 
+ * @param userParam 
+ */
 void systick_callback(void *userParam)
 {
 	(void)userParam;
